@@ -3,7 +3,6 @@
 ## 前提条件
 
 - go version: 1.15.0
-- moduleを使用する
 
 ## goenv
 
@@ -22,7 +21,7 @@ $ git clone https://github.com/syndbg/goenv.git ~/.goenv
 - zshの場合は`~/.bash_profile`ではなく`~/.zshenv`に書き込み
 
 ```bash
-$ echo 'export GOPATH="$HOME/.go"' >> ~/.bash_profile
+$ echo 'export GOPATH="$HOME/go"' >> ~/.bash_profile
 $ echo 'export GOENV_ROOT="$HOME/.goenv"' >> ~/.bash_profile
 $ echo 'export PATH="$GOENV_ROOT/bin:$PATH"' >> ~/.bash_profile
 ```
@@ -39,9 +38,6 @@ $ echo 'eval "$(goenv init -)"' >> ~/.bash_profile
 
 ```bash
 $ exec $SHELL
-
-$ which go
-$HOME/.goenv/shims/go # goenvのパスが表示されていればインストール成功
 ```
 
 ### install
@@ -68,19 +64,19 @@ go version go1.15 darwin/amd64  # バージョンが変わっていることを�
 - `Preferences > Languages & Frameworks > Go > GOROOT` を開き、GOROOTを設定する
 - GOPATHは設定しない。moduleを使うため
 
-<img src="./img/intelliJ_go_root.png" />
+<img src="./img/intelliJ_go_root.png" alt="intelliJ_go_root"/>
 
 ### moduleを使うため、IntelliJで有効にする
 
 - `Preferences > Languages & Frameworks > Go > Go Modules`を開いて設定する
 
-<img src="./img/intelliJ_go_module.png" />
+<img src="./img/intelliJ_go_module.png" alt="intelliJ_go_module"/>
 
 ### 保存時にformatを実行するように設定する
 
 - `Preferences > Tools > File Watchers` を開き、左下の「+」をクリックして、「go fmt」を追加。
   - 保存時に`go fmt`が実行される
   
-<img src="./img/intelliJ_go_format.png" />
+<img src="./img/intelliJ_go_format.png" alt="intelliJ_go_format"/>
 
 
