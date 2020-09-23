@@ -1,4 +1,3 @@
-basePath: /v2
 definitions:
   error_handling.APIError:
     properties:
@@ -13,10 +12,38 @@ definitions:
     properties:
       message:
         type: string
+      message_id:
+        type: integer
       title:
         type: string
     type: object
-host: petstore.swagger.io
+  models.Messages:
+    items:
+      $ref: '#/definitions/models.Message'
+    type: array
+  models.User:
+    properties:
+      age:
+        type: integer
+      id:
+        type: integer
+      job_large_type_id:
+        type: string
+      job_middle_type_id:
+        type: string
+      job_name:
+        type: string
+      job_small_type_id:
+        type: string
+      job_term:
+        type: integer
+      messages:
+        $ref: '#/definitions/models.Messages'
+        type: object
+      name:
+        type: string
+    type: object
+host: localhost:1323
 info:
   contact:
     email: support@swagger.io
@@ -36,9 +63,21 @@ paths:
       - application/json
       description: search messages
       parameters:
+      - description: メッセージID
+        in: query
+        name: message_id
+        type: integer
+      - description: ユーザID
+        in: query
+        name: user_id
+        type: integer
       - description: タイトル
         in: query
         name: title
+        type: string
+      - description: メッセージ
+        in: query
+        name: message
         type: string
       produces:
       - application/json
@@ -54,15 +93,47 @@ paths:
           schema:
             $ref: '#/definitions/error_handling.APIError'
       summary: search messages
-  /message2:
+  /user:
     get:
       consumes:
       - application/json
-      description: search messages
+      description: search users
       parameters:
-      - description: タイトル
+      - description: ユーザーID
         in: query
-        name: title
+        name: user_id
+        type: string
+      - description: 名前
+        in: query
+        name: name
+        type: string
+      - description: 年齢
+        in: query
+        name: age
+        type: string
+      - description: 職種大分類
+        in: query
+        name: job_large_type_id
+        type: string
+      - description: 職種中分類
+        in: query
+        name: job_middle_type_id
+        type: string
+      - description: 職種小分類
+        in: query
+        name: job_small_type_id
+        type: string
+      - description: 職種名
+        in: query
+        name: job_name
+        type: string
+      - description: 就業期間
+        in: query
+        name: job_term
+        type: string
+      - description: メッセージID
+        in: query
+        name: message_id
         type: string
       produces:
       - application/json
@@ -71,11 +142,11 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.Message'
+              $ref: '#/definitions/models.User'
             type: array
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/error_handling.APIError'
-      summary: search messagesつー
+      summary: search users
 swagger: "2.0"

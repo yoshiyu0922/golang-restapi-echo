@@ -12,5 +12,7 @@ func Routing(e *echo.Echo, sqlHandler *database.SqlHandler) {
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	msg := controller.NewMessageController(sqlHandler)
+	user := controller.NewUserController(sqlHandler)
 	e.GET("/message", msg.SearchMessage)
+	e.GET("/user", user.Search)
 }

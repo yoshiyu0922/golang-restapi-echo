@@ -15,8 +15,7 @@
         },
         "version": "1.0"
     },
-    "host": "petstore.swagger.io",
-    "basePath": "/v2",
+    "host": "localhost:1323",
     "paths": {
         "/message": {
             "get": {
@@ -30,9 +29,27 @@
                 "summary": "search messages",
                 "parameters": [
                     {
+                        "type": "integer",
+                        "description": "メッセージID",
+                        "name": "message_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ユーザID",
+                        "name": "user_id",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
                         "description": "タイトル",
                         "name": "title",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "メッセージ",
+                        "name": "message",
                         "in": "query"
                     }
                 ],
@@ -55,21 +72,69 @@
                 }
             }
         },
-        "/message2": {
+        "/user": {
             "get": {
-                "description": "search messages",
+                "description": "search users",
                 "consumes": [
                     "application/json"
                 ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "search messagesつー",
+                "summary": "search users",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "タイトル",
-                        "name": "title",
+                        "description": "ユーザーID",
+                        "name": "user_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "名前",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "年齢",
+                        "name": "age",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "職種大分類",
+                        "name": "job_large_type_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "職種中分類",
+                        "name": "job_middle_type_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "職種小分類",
+                        "name": "job_small_type_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "職種名",
+                        "name": "job_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "就業期間",
+                        "name": "job_term",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "メッセージID",
+                        "name": "message_id",
                         "in": "query"
                     }
                 ],
@@ -79,7 +144,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Message"
+                                "$ref": "#/definitions/models.User"
                             }
                         }
                     },
@@ -114,7 +179,49 @@
                 "message": {
                     "type": "string"
                 },
+                "message_id": {
+                    "type": "integer"
+                },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Messages": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/models.Message"
+            }
+        },
+        "models.User": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "job_large_type_id": {
+                    "type": "string"
+                },
+                "job_middle_type_id": {
+                    "type": "string"
+                },
+                "job_name": {
+                    "type": "string"
+                },
+                "job_small_type_id": {
+                    "type": "string"
+                },
+                "job_term": {
+                    "type": "integer"
+                },
+                "messages": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.Messages"
+                },
+                "name": {
                     "type": "string"
                 }
             }

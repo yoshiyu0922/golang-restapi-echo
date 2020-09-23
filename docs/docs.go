@@ -45,9 +45,27 @@ var doc = `{
                 "summary": "search messages",
                 "parameters": [
                     {
+                        "type": "integer",
+                        "description": "メッセージID",
+                        "name": "message_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ユーザID",
+                        "name": "user_id",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
                         "description": "タイトル",
                         "name": "title",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "メッセージ",
+                        "name": "message",
                         "in": "query"
                     }
                 ],
@@ -70,21 +88,69 @@ var doc = `{
                 }
             }
         },
-        "/message2": {
+        "/user": {
             "get": {
-                "description": "search messages",
+                "description": "search users",
                 "consumes": [
                     "application/json"
                 ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "search messagesつー",
+                "summary": "search users",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "タイトル",
-                        "name": "title",
+                        "description": "ユーザーID",
+                        "name": "user_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "名前",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "年齢",
+                        "name": "age",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "職種大分類",
+                        "name": "job_large_type_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "職種中分類",
+                        "name": "job_middle_type_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "職種小分類",
+                        "name": "job_small_type_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "職種名",
+                        "name": "job_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "就業期間",
+                        "name": "job_term",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "メッセージID",
+                        "name": "message_id",
                         "in": "query"
                     }
                 ],
@@ -94,7 +160,7 @@ var doc = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Message"
+                                "$ref": "#/definitions/models.User"
                             }
                         }
                     },
@@ -129,7 +195,49 @@ var doc = `{
                 "message": {
                     "type": "string"
                 },
+                "message_id": {
+                    "type": "integer"
+                },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Messages": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/models.Message"
+            }
+        },
+        "models.User": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "job_large_type_id": {
+                    "type": "string"
+                },
+                "job_middle_type_id": {
+                    "type": "string"
+                },
+                "job_name": {
+                    "type": "string"
+                },
+                "job_small_type_id": {
+                    "type": "string"
+                },
+                "job_term": {
+                    "type": "integer"
+                },
+                "messages": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.Messages"
+                },
+                "name": {
                     "type": "string"
                 }
             }
@@ -149,8 +257,8 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
-	Host:        "petstore.swagger.io",
-	BasePath:    "/v2",
+	Host:        "localhost:1323",
+	BasePath:    "",
 	Schemes:     []string{},
 	Title:       "Swagger Example API",
 	Description: "This is a sample server Petstore server.",

@@ -3,6 +3,7 @@ package repository
 import (
 	"api.com/rest-base-api/src/domain/models"
 	"api.com/rest-base-api/src/infrastructure/database"
+	"api.com/rest-base-api/src/interface/dto"
 	"api.com/rest-base-api/src/usecase"
 	"context"
 	sq "github.com/Masterminds/squirrel"
@@ -22,13 +23,22 @@ func (repo *messageRepository) FindAll() (messages models.Messages, err error) {
 	return
 }
 
-func (repo *messageRepository) FindByTitle(title *string) (messages models.Messages, err error) {
+func (repo *messageRepository) Search(input *dto.MessageSearchInput) (messages models.Messages, err error) {
 	sb := sq.
-		Select("title", "message").
+		Select("id", "title", "message").
 		From("messages")
 
-	if len(*title) > 0 {
-		sb = sb.Where(sq.Eq{"title": *title})
+	if input.Id != nil {
+		sb = sb.Where(sq.Eq{"id": input.Id})
+	}
+	if input.UserId != nil {
+		sb = sb.Where(sq.Eq{"user_id": input.UserId})
+	}
+	if input.Title != nil {
+		sb = sb.Where(sq.Eq{"title": input.Title})
+	}
+	if input.Message != nil {
+		sb = sb.Where(sq.Eq{"message": input.Message})
 	}
 
 	query, args, _ := sb.ToSql()

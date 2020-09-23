@@ -1,18 +1,7 @@
 START TRANSACTION;
 
-DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS users;
-
--- メッセージ
-CREATE TABLE IF NOT EXISTS messages (
-  title     VARCHAR(255) NOT NULL comment 'タイトル',
-  message   VARCHAR(255) NOT NULL comment 'メッセージ'
-)
-comment = 'メッセージ';
-
-INSERT INTO `messages`(`title`, `message`) VALUES ('Welcome','Hello World!');
-INSERT INTO `messages`(`title`, `message`) VALUES ('使用するRDBMSは','MySQLです。');
-INSERT INTO `messages`(`title`, `message`) VALUES ('使用する言語とフレームワークは？','Go言語とechoです。');
+DROP TABLE IF EXISTS messages;
 
 CREATE TABLE IF NOT EXISTS users(
     id int NOT NULL comment 'ユーザーID',
@@ -35,5 +24,18 @@ INSERT INTO users (id, name, age, job_large_type_id, job_middle_type_id, job_sma
 INSERT INTO users (id, name, age, job_large_type_id, job_middle_type_id, job_small_type_id, job_name, job_term) VALUES (8, 'ジョブ八郎', 39, '03', null, null, '営業', 5);
 INSERT INTO users (id, name, age, job_large_type_id, job_middle_type_id, job_small_type_id, job_name, job_term) VALUES (9, 'ジョブ九郎', 40, '03', '0303', null, '不動産営業', 5);
 INSERT INTO users (id, name, age, job_large_type_id, job_middle_type_id, job_small_type_id, job_name, job_term) VALUES (10, 'ジョブ十郎', 20, '03', '0303', '030301', 'サポート', 5);
+
+-- メッセージ
+CREATE TABLE IF NOT EXISTS messages (
+  id int NOT NULL comment 'メッセージID',
+  user_id    int NOT NULL comment 'ユーザーID',
+  title      VARCHAR(255) NOT NULL comment 'タイトル',
+  message    VARCHAR(255) NOT NULL comment 'メッセージ'
+)
+comment = 'メッセージ';
+
+INSERT INTO `messages`(`id`, `user_id`, `title`, `message`) VALUES (1, 1, 'Welcome','Hello World!');
+INSERT INTO `messages`(`id`, `user_id`, `title`, `message`) VALUES (2, 2, '使用するRDBMSは','MySQLです。');
+INSERT INTO `messages`(`id`, `user_id`, `title`, `message`) VALUES (3, 2, '使用する言語とフレームワークは？','Go言語とechoです。');
 
 COMMIT;
