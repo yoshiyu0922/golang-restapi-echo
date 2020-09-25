@@ -1,4 +1,4 @@
-package dto
+package input
 
 type MessageSearchInput struct {
 	Id      *string `query:"message_id"`

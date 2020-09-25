@@ -8,15 +8,10 @@ type ValidationErrorDetail struct {
 type ValidationErrorDetails = []ValidationErrorDetail
 
 type ValidationError struct {
-	Code    int
-	Message string
+	Err     error
 	Details ValidationErrorDetails
 }
 
 func (v *ValidationError) Error() string {
-	return v.Message
-}
-
-func (v *ValidationError) Initialize(itemDetails ValidationErrorDetails) {
-	v.Details = itemDetails
+	return v.Err.Error()
 }

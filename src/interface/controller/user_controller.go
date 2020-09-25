@@ -2,15 +2,15 @@ package controller
 
 import (
 	"api.com/rest-base-api/src/infrastructure/database"
-	"api.com/rest-base-api/src/interface/dto"
-	"api.com/rest-base-api/src/interface/repository"
+	"api.com/rest-base-api/src/interface/dto/input"
 	"api.com/rest-base-api/src/usecase"
 	"github.com/labstack/echo/v4"
+	"github.com/pkg/errors"
 	"net/http"
 )
 
 type UserController struct {
-	Usecase usecase.UserUsecase
+	Usecase *usecase.UserUsecase
 }
 
 // search users.
@@ -30,23 +30,22 @@ type UserController struct {
 // @Success 200 {array} models.User
 // @Failure 500 {object} error_handling.APIError
 // @Router /user [get]
-func NewUserController(handler *database.SqlHandler) *UserController {
+func NewUserController(sqlHandler *database.SqlHandler) *UserController {
 	return &UserController{
-		Usecase: usecase.UserUsecase{
-			Repository: repository.NewUserRepository(handler),
-		},
+		Usecase: usecase.NewUserUsecase(sqlHandler),
 	}
 }
 
 func (u *UserController) Search(c echo.Context) (err error) {
-	input := new(dto.UserSearchInput)
-	if err := c.Bind(input); err != nil {
-		return err
+	req := new(input.UserSearchInput)
+	if err := c.Bind(req); err != nil {
+		return errors.WithStack(err) // 必ずstacktraceをつけてエラーを返す
 	}
-	res, err := u.Usecase.Search(input)
+
+	res, err := u.Usecase.Search(req)
 	// Controller側でエラーハンドリングする
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 
 	return c.JSON(http.StatusOK, res)

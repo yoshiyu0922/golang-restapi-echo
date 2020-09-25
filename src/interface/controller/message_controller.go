@@ -3,15 +3,18 @@ package controller
 import (
 	_ "api.com/rest-base-api/docs"
 	"api.com/rest-base-api/src/infrastructure/database"
-	"api.com/rest-base-api/src/interface/dto"
-	"api.com/rest-base-api/src/interface/repository"
+	"api.com/rest-base-api/src/interface/dto/input"
+	"api.com/rest-base-api/src/interface/error_handling"
 	"api.com/rest-base-api/src/usecase"
+	"fmt"
 	"github.com/labstack/echo/v4"
+	"github.com/pkg/errors"
 	"net/http"
+	"unicode/utf8"
 )
 
 type MessageController struct {
-	Usecase usecase.MessageUsecase
+	Usecase *usecase.MessageUsecase
 }
 
 // search messages.
@@ -28,21 +31,44 @@ type MessageController struct {
 // @Router /message [get]
 func NewMessageController(sqlHandler *database.SqlHandler) *MessageController {
 	return &MessageController{
-		Usecase: usecase.MessageUsecase{
-			Repository: repository.NewMessageRepository(sqlHandler),
-		},
+		Usecase: usecase.NewMessageUsecase(sqlHandler),
 	}
 }
 
-func (controller *MessageController) SearchMessage(c echo.Context) error {
-	input := new(dto.MessageSearchInput)
-	if err := c.Bind(input); err != nil {
-		return err
+func (controller MessageController) SearchMessage(c echo.Context) error {
+	// リクエストパラメータと構造体をバインドする
+	req := new(input.MessageSearchInput)
+	if err := c.Bind(req); err != nil {
+		return errors.WithStack(err) // 必ずstacktraceをつけてエラーを返す
 	}
-	res, err := controller.Usecase.Search(input)
+
+	// バリデーションチェック
+	var validErrors = make([]error_handling.ValidationErrorDetail, 0)
+	if req.Title != nil && utf8.RuneCountInString(*req.Title) > 20 {
+		validErrors = append(validErrors, error_handling.ValidationErrorDetail{
+			Item:    "title",
+			Message: fmt.Sprintf("タイトルは20文字以内で入力してください。: %d", utf8.RuneCountInString(*req.Title)),
+		})
+	}
+	if req.Message != nil && utf8.RuneCountInString(*req.Message) > 50 {
+		validErrors = append(validErrors, error_handling.ValidationErrorDetail{
+			Item:    "message",
+			Message: fmt.Sprintf("メッセージは50文字以内で入力してください。: %d", utf8.RuneCountInString(*req.Message)),
+		})
+	}
+	if len(validErrors) > 0 {
+		e := &error_handling.ValidationError{
+			Err:     errors.New("validation error in message_controller.SearchMessage"),
+			Details: validErrors,
+		}
+		return errors.WithStack(e)
+	}
+
+	result, err := controller.Usecase.Search(req)
 	// Controller側でエラーハンドリングする
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
-	return c.JSON(http.StatusOK, res)
+
+	return c.JSON(http.StatusOK, result)
 }

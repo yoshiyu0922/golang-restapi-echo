@@ -3,23 +3,17 @@ package repository
 import (
 	"api.com/rest-base-api/src/domain/models"
 	"api.com/rest-base-api/src/infrastructure/database"
-	"api.com/rest-base-api/src/interface/dto"
-	"api.com/rest-base-api/src/usecase"
+	"api.com/rest-base-api/src/interface/dto/input"
 	"context"
-	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/volatiletech/sqlboiler/queries"
 )
 
-type userRepository struct {
-	sqlHandler *database.SqlHandler
+type UserRepository struct {
+	SqlHandler *database.SqlHandler
 }
 
-func NewUserRepository(sqlHandler *database.SqlHandler) usecase.UserRepository {
-	return &userRepository{sqlHandler}
-}
-
-func (repo *userRepository) Search(input *dto.UserSearchInput) (users models.Users, err error) {
+func (repo *UserRepository) Search(input *input.UserSearchInput) (users models.Users, err error) {
 	sb := sq.Select(`
 	u.id,
 	name,
@@ -51,7 +45,6 @@ func (repo *userRepository) Search(input *dto.UserSearchInput) (users models.Use
 	}
 
 	query, args, _ := sb.ToSql()
-	fmt.Println(query)
-	err = queries.Raw(query, args...).Bind(context.Background(), repo.sqlHandler.Conn, &users)
+	err = queries.Raw(query, args...).Bind(context.Background(), repo.SqlHandler.Conn, &users)
 	return
 }

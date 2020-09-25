@@ -3,29 +3,24 @@ package repository
 import (
 	"api.com/rest-base-api/src/domain/models"
 	"api.com/rest-base-api/src/infrastructure/database"
-	"api.com/rest-base-api/src/interface/dto"
-	"api.com/rest-base-api/src/usecase"
+	"api.com/rest-base-api/src/interface/dto/input"
 	"context"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/volatiletech/sqlboiler/queries"
 )
 
-type messageRepository struct {
-	sqlHandler *database.SqlHandler
+type MessageRepository struct {
+	SqlHandler *database.SqlHandler
 }
 
-func NewMessageRepository(sqlHandler *database.SqlHandler) usecase.MessageRepository {
-	return &messageRepository{sqlHandler}
-}
-
-func (repo *messageRepository) FindAll() (messages models.Messages, err error) {
-	err = queries.Raw("select * from messages").Bind(context.Background(), repo.sqlHandler.Conn, &messages)
+func (repo *MessageRepository) FindAll() (messages models.Messages, err error) {
+	err = queries.Raw("select * from messages").Bind(context.Background(), repo.SqlHandler.Conn, &messages)
 	return
 }
 
-func (repo *messageRepository) Search(input *dto.MessageSearchInput) (messages models.Messages, err error) {
+func (repo *MessageRepository) Search(input *input.MessageSearchInput) (messages models.Messages, err error) {
 	sb := sq.
-		Select("id", "title", "message").
+		Select("id", "user_id", "title", "message").
 		From("messages")
 
 	if input.Id != nil {
@@ -42,6 +37,17 @@ func (repo *messageRepository) Search(input *dto.MessageSearchInput) (messages m
 	}
 
 	query, args, _ := sb.ToSql()
-	err = queries.Raw(query, args...).Bind(context.Background(), repo.sqlHandler.Conn, &messages)
+	err = queries.Raw(query, args...).Bind(context.Background(), repo.SqlHandler.Conn, &messages)
+	return
+}
+
+func (repo *MessageRepository) FindByUserIds(userIds *[]int) (messages models.Messages, err error) {
+	sb := sq.
+		Select("id", "user_id", "title", "message").
+		From("messages").
+		Where(sq.Eq{"user_id": userIds})
+
+	query, args, _ := sb.ToSql()
+	err = queries.Raw(query, args...).Bind(context.Background(), repo.SqlHandler.Conn, &messages)
 	return
 }
