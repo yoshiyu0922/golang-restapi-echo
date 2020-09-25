@@ -1,0 +1,152 @@
+definitions:
+  error_handling.APIError:
+    properties:
+      code:
+        type: integer
+      details:
+        type: object
+      message:
+        type: string
+    type: object
+  models.Message:
+    properties:
+      message:
+        type: string
+      message_id:
+        type: integer
+      title:
+        type: string
+    type: object
+  models.Messages:
+    items:
+      $ref: '#/definitions/models.Message'
+    type: array
+  models.User:
+    properties:
+      age:
+        type: integer
+      id:
+        type: integer
+      job_large_type_id:
+        type: string
+      job_middle_type_id:
+        type: string
+      job_name:
+        type: string
+      job_small_type_id:
+        type: string
+      job_term:
+        type: integer
+      messages:
+        $ref: '#/definitions/models.Messages'
+        type: object
+      name:
+        type: string
+    type: object
+host: localhost:1323
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server Petstore server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /message:
+    get:
+      consumes:
+      - application/json
+      description: search messages
+      parameters:
+      - description: メッセージID
+        in: query
+        name: message_id
+        type: integer
+      - description: ユーザID
+        in: query
+        name: user_id
+        type: integer
+      - description: タイトル
+        in: query
+        name: title
+        type: string
+      - description: メッセージ
+        in: query
+        name: message
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Message'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error_handling.APIError'
+      summary: search messages
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: search users
+      parameters:
+      - description: ユーザーID
+        in: query
+        name: user_id
+        type: string
+      - description: 名前
+        in: query
+        name: name
+        type: string
+      - description: 年齢
+        in: query
+        name: age
+        type: string
+      - description: 職種大分類
+        in: query
+        name: job_large_type_id
+        type: string
+      - description: 職種中分類
+        in: query
+        name: job_middle_type_id
+        type: string
+      - description: 職種小分類
+        in: query
+        name: job_small_type_id
+        type: string
+      - description: 職種名
+        in: query
+        name: job_name
+        type: string
+      - description: 就業期間
+        in: query
+        name: job_term
+        type: string
+      - description: メッセージID
+        in: query
+        name: message_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error_handling.APIError'
+      summary: search users
+swagger: "2.0"
