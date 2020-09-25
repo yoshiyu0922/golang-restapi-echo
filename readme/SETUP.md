@@ -2,7 +2,8 @@
 
 ## 前提条件
 
-- go version: 1.15.0
+- dockerをインストール済み
+- mysqlクライアントインストール済み
 
 ## goenv
 
@@ -79,4 +80,34 @@ go version go1.15 darwin/amd64  # バージョンが変わっていることを�
   
 <img src="./img/intelliJ_go_format.png" alt="intelliJ_go_format"/>
 
+## ローカルDBを構築
+
+```
+$ cd go-rest-api-base/docker
+$ docker-compose up
+```
+
+マイグレーションを実行
+
+```
+migrate -source file:migrations/ -database 'mysql://gouser:password@tcp(localhost:3306)/go_sample' up
+```
+
+
+ローカルからDBに接続できるか確認する
+
+```
+mysql -u root -proot -h 127.0.0.1 --port=3306 -D go_sample
+SHOW TABLES FROM go_sample;
+-> テーブル一覧が出ればOK
+```
+
+phpMyAdminを開く: http://localhost:18080/
+
+<img src="./img/phpMyAdmin_top.png" alt="phpMyAdmin_top"/>
+
+
+#### 備忘録
+
+- DBクライアントから接続するためにはユーザの認証プラグインを変更する必要があるが、my.cnfで設定済み
 
