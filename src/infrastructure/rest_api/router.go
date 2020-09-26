@@ -1,10 +1,10 @@
 package rest_api
 
 import (
-	_ "api.com/rest-base-api/docs"
-	"api.com/rest-base-api/src/infrastructure/database"
-	"api.com/rest-base-api/src/interface/controller"
-	"api.com/rest-base-api/src/interface/error_handling"
+	_ "api.com/go-echo-rest-api/docs"
+	"api.com/go-echo-rest-api/src/infrastructure/database"
+	"api.com/go-echo-rest-api/src/interface/controller"
+	"api.com/go-echo-rest-api/src/interface/error_handling"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"

@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"api.com/rest-base-api/src/infrastructure/database"
-	"api.com/rest-base-api/src/interface/dto/input"
-	"api.com/rest-base-api/src/usecase"
+	"api.com/go-echo-rest-api/src/infrastructure/database"
+	"api.com/go-echo-rest-api/src/interface/dto/input"
+	"api.com/go-echo-rest-api/src/usecase"
 	"github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
 	"net/http"

@@ -1,8 +1,8 @@
 package src
 
 import (
-	"api.com/rest-base-api/src/infrastructure/database"
-	"api.com/rest-base-api/src/infrastructure/rest_api"
+	"api.com/go-echo-rest-api/src/infrastructure/database"
+	"api.com/go-echo-rest-api/src/infrastructure/rest_api"
 	"github.com/joho/godotenv"
 	"log"
 	"os"
