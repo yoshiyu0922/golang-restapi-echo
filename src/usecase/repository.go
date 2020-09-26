@@ -1,10 +1,10 @@
 package usecase
 
 import (
-	"api.com/rest-base-api/src/domain/models"
-	"api.com/rest-base-api/src/infrastructure/database"
-	"api.com/rest-base-api/src/interface/dto/input"
-	"api.com/rest-base-api/src/interface/repository"
+	"api.com/go-echo-rest-api/src/domain/models"
+	"api.com/go-echo-rest-api/src/infrastructure/database"
+	"api.com/go-echo-rest-api/src/interface/dto/input"
+	"api.com/go-echo-rest-api/src/interface/repository"
 )
 
 type MessageRepository interface {

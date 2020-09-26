@@ -1,11 +1,9 @@
 package usecase
 
 import (
-	"api.com/rest-base-api/src/domain/models"
-	"api.com/rest-base-api/src/infrastructure/database"
-	"api.com/rest-base-api/src/interface/dto/input"
-	"api.com/rest-base-api/src/interface/dto/output"
-	"github.com/wesovilabs/koazee"
+	"api.com/go-echo-rest-api/src/infrastructure/database"
+	"api.com/go-echo-rest-api/src/interface/dto/input"
+	"api.com/go-echo-rest-api/src/interface/dto/output"
 )
 
 type MessageUsecase struct {
@@ -25,16 +23,14 @@ func (usecase *MessageUsecase) Search(input *input.MessageSearchInput) (out *out
 		return nil, err
 	}
 
-	// DBから取得したメッセージを件数分、レスポンスに変換する
-	var result = make([]*output.MessageSearch, 0)
-	if messages != nil {
-		result = koazee.StreamOf(messages).Map(func(msg models.Message) *output.MessageSearch {
-			res := new(output.MessageSearch)
-			res.Update(&msg)
-			return res
-		}).Do().Out().Val().([]*output.MessageSearch)
+	// DBから取得したメッセージを件数分、レスポンスに変換する（koazeeを使わないパターン）
+	var d = make([]*output.MessageSearch, len(messages), len(messages))
+	for i, m := range messages {
+		s := new(output.MessageSearch)
+		s.Update(&m)
+		d[i] = s
 	}
 
 	// ポインターを返す：値を返すとコピーされてメモリを食うため
-	return &output.MessageSearchOutput{Data: result}, err
+	return &output.MessageSearchOutput{Data: d}, err
 }

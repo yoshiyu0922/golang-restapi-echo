@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"api.com/rest-base-api/src/domain/models"
-	"api.com/rest-base-api/src/infrastructure/database"
-	"api.com/rest-base-api/src/interface/dto/input"
+	"api.com/go-echo-rest-api/src/domain/models"
+	"api.com/go-echo-rest-api/src/infrastructure/database"
+	"api.com/go-echo-rest-api/src/interface/dto/input"
 	"context"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/volatiletech/sqlboiler/queries"

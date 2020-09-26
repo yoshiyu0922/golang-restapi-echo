@@ -1,8 +1,8 @@
 package main
 
 import (
-	_ "api.com/rest-base-api/docs"
-	server "api.com/rest-base-api/src"
+	_ "api.com/go-echo-rest-api/docs"
+	server "api.com/go-echo-rest-api/src"
 )
 
 // @title Swagger Example API

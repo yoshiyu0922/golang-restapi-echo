@@ -1,7 +1,7 @@
 package output
 
 import (
-	"api.com/rest-base-api/src/domain/models"
+	"api.com/go-echo-rest-api/src/domain/models"
 )
 
 type MessageSearchOutput struct {

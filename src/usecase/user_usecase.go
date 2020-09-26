@@ -1,10 +1,10 @@
 package usecase
 
 import (
-	"api.com/rest-base-api/src/domain/models"
-	"api.com/rest-base-api/src/infrastructure/database"
-	"api.com/rest-base-api/src/interface/dto/input"
-	"api.com/rest-base-api/src/interface/dto/output"
+	"api.com/go-echo-rest-api/src/domain/models"
+	"api.com/go-echo-rest-api/src/infrastructure/database"
+	"api.com/go-echo-rest-api/src/interface/dto/input"
+	"api.com/go-echo-rest-api/src/interface/dto/output"
 	"github.com/wesovilabs/koazee"
 )
 
@@ -33,16 +33,26 @@ func (u *UserUsecase) Search(user *input.UserSearchInput) (out *output.UserSearc
 	}
 
 	// ユーザーIDのリストを抽出して、それらに紐づくメッセージを取得
-	ids := koazee.StreamOf(users).Map(func(u models.User) int {
-		return u.Id
-	}).RemoveDuplicates().Do().Out().Val().([]int)
+	ids := koazee.StreamOf(users).
+		Map(func(u models.User) int {
+			return u.Id
+		}).
+		RemoveDuplicates().
+		Do().Out().Val().([]int)
 	messages, err := u.MessageRepository.FindByUserIds(&ids)
 	if err != nil {
 		return nil, err
 	}
 
 	// usersの件数分、messagesとuser_idでマッピングし、レスポンスに変換する
-	result := koazee.StreamOf(users).Map(func(u models.User) *output.UserSearch {
+	result := koazee.StreamOf(users).Map(createOutput(messages)).Do().Out().Val().([]*output.UserSearch)
+
+	// ポインターを返す：値を返すとコピーされてメモリを食うため
+	return &output.UserSearchOutput{Data: result}, err
+}
+
+func createOutput(messages models.Messages) func(u models.User) *output.UserSearch {
+	return func(u models.User) *output.UserSearch {
 		res := new(output.UserSearch)
 		// users.idに紐づくmessagesを抽出
 		if messages != nil {
@@ -56,8 +66,5 @@ func (u *UserUsecase) Search(user *input.UserSearchInput) (out *output.UserSearc
 			res.Update(&u, make([]models.Message, 0))
 		}
 		return res
-	}).Do().Out().Val().([]*output.UserSearch)
-
-	// ポインターを返す：値を返すとコピーされてメモリを食うため
-	return &output.UserSearchOutput{Data: result}, err
+	}
 }
