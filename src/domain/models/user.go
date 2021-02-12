@@ -2,8 +2,10 @@ package models
 
 import "database/sql"
 
+type UserIdType int
+
 type User struct {
-	Id              int            `json:"id"`
+	Id              UserIdType     `json:"id"`
 	Name            string         `json:"name"`
 	Age             int            `json:"age"`
 	JobLargeTypeId  sql.NullString `json:"job_large_type_id"`

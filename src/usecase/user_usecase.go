@@ -1,10 +1,10 @@
 package usecase
 
 import (
+	"api.com/go-echo-rest-api/src/adapter/dto/input"
+	"api.com/go-echo-rest-api/src/adapter/dto/output"
 	"api.com/go-echo-rest-api/src/domain/models"
 	"api.com/go-echo-rest-api/src/infrastructure/database"
-	"api.com/go-echo-rest-api/src/interface/dto/input"
-	"api.com/go-echo-rest-api/src/interface/dto/output"
 	"github.com/wesovilabs/koazee"
 )
 
@@ -34,11 +34,11 @@ func (u *UserUsecase) Search(user *input.UserSearchInput) (out *output.UserSearc
 
 	// ユーザーIDのリストを抽出して、それらに紐づくメッセージを取得
 	ids := koazee.StreamOf(users).
-		Map(func(u models.User) int {
+		Map(func(u models.User) models.UserIdType {
 			return u.Id
 		}).
 		RemoveDuplicates().
-		Do().Out().Val().([]int)
+		Do().Out().Val().([]models.UserIdType)
 	messages, err := u.MessageRepository.FindByUserIds(&ids)
 	if err != nil {
 		return nil, err

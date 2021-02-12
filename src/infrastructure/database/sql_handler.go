@@ -17,7 +17,6 @@ func NewSqlHandler(
 	port string,
 	dbName string,
 ) *SqlHandler {
-	// TODO: GCPに接続する場合は少しURLが異なるかもしれないので、その場合はENVで切り分ける
 	sqlInfo := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, dbName)
 	conn, err := sql.Open("mysql", sqlInfo)
 	if err != nil {

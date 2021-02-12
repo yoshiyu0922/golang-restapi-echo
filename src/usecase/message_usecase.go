@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"api.com/go-echo-rest-api/src/infrastructure/database"
-	"api.com/go-echo-rest-api/src/interface/dto/input"
-	"api.com/go-echo-rest-api/src/interface/dto/output"
+	"api.com/go-echo-rest-api/src/adapter/dto/input"
+	"api.com/go-echo-rest-api/src/adapter/dto/output"
 )
 
 type MessageUsecase struct {

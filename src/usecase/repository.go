@@ -1,10 +1,10 @@
 package usecase
 
 import (
+	"api.com/go-echo-rest-api/src/adapter/dto/input"
+	"api.com/go-echo-rest-api/src/adapter/repository"
 	"api.com/go-echo-rest-api/src/domain/models"
 	"api.com/go-echo-rest-api/src/infrastructure/database"
-	"api.com/go-echo-rest-api/src/interface/dto/input"
-	"api.com/go-echo-rest-api/src/interface/repository"
 )
 
 type MessageRepository interface {
@@ -12,7 +12,7 @@ type MessageRepository interface {
 
 	Search(title *input.MessageSearchInput) (messages models.Messages, err error)
 
-	FindByUserIds(userIds *[]int) (messages models.Messages, err error)
+	FindByUserIds(userIds *[]models.UserIdType) (messages models.Messages, err error)
 }
 
 func NewMessageRepository(sqlHandler *database.SqlHandler) MessageRepository {
