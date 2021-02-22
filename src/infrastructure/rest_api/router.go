@@ -2,10 +2,11 @@ package rest_api
 
 import (
 	_ "api.com/go-echo-rest-api/docs"
-	"api.com/go-echo-rest-api/src/infrastructure/config"
-	"api.com/go-echo-rest-api/src/infrastructure/database"
 	"api.com/go-echo-rest-api/src/adapter/controller"
 	"api.com/go-echo-rest-api/src/core/error_handling"
+	"api.com/go-echo-rest-api/src/infrastructure/config"
+	"api.com/go-echo-rest-api/src/infrastructure/database"
+	customcontext "api.com/go-echo-rest-api/src/infrastructure/rest_api/context"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
@@ -30,15 +31,15 @@ func Initialize(
 		AllowMethods:     []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 	}))
 
-	// リクエストヘッダー認証
-	e.Use(requestHeaderMiddleware(appConfig))
+	e.Use(customContextMiddleware(sqlHandler)) // CustomContext作成
+	e.Use(requestHeaderMiddleware(appConfig))  // リクエストヘッダー認証
 
 	// Error Handling
 	e.HTTPErrorHandler = error_handling.JSONErrorHandler
 
 	// instance Controllers
-	msg := controller.NewMessageController(sqlHandler)
-	user := controller.NewUserController(sqlHandler)
+	msg := controller.NewMessageController()
+	user := controller.NewUserController()
 
 	// Routing
 	if appConfig.Environment != "production" {
@@ -50,6 +51,26 @@ func Initialize(
 	return e
 }
 
+/**
+CustomContext作成
+*/
+func customContextMiddleware(handler *database.SqlHandler) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) (err error) {
+			cctx := &customcontext.CustomContext{
+				Context: c,
+				DB:      handler,
+			}
+			return next(cctx)
+
+		}
+	}
+}
+
+/**
+リクエストヘッダのMiddleware
+	- allowOriginsの確認
+*/
 func requestHeaderMiddleware(applicationConfig *config.Application) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {

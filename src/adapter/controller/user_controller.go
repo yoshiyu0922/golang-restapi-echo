@@ -2,21 +2,17 @@ package controller
 
 import (
 	"api.com/go-echo-rest-api/src/adapter/dto/input"
-	"api.com/go-echo-rest-api/src/infrastructure/database"
+	"api.com/go-echo-rest-api/src/infrastructure/rest_api/context"
 	"api.com/go-echo-rest-api/src/usecase"
 	"github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
 	"net/http"
 )
 
-type UserController struct {
-	Usecase *usecase.UserUsecase
-}
+type UserController struct{}
 
-func NewUserController(sqlHandler *database.SqlHandler) *UserController {
-	return &UserController{
-		Usecase: usecase.NewUserUsecase(sqlHandler),
-	}
+func NewUserController() *UserController {
+	return &UserController{}
 }
 
 // search users.
@@ -37,12 +33,13 @@ func NewUserController(sqlHandler *database.SqlHandler) *UserController {
 // @Failure 500 {object} error_handling.APIError
 // @Router /user [get]
 func (u *UserController) Search(c echo.Context) (err error) {
+	cc, _ := c.(*context.CustomContext)
 	req := new(input.UserSearchInput)
-	if err := c.Bind(req); err != nil {
+	if err := cc.Bind(req); err != nil {
 		return errors.WithStack(err) // 必ずstacktraceをつけてエラーを返す
 	}
 
-	res, err := u.Usecase.Search(req)
+	res, err := usecase.NewUserUsecase(cc.DB).Search(req)
 	// Controller側でエラーハンドリングする
 	if err != nil {
 		return errors.WithStack(err)

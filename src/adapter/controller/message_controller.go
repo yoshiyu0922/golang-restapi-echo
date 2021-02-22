@@ -4,7 +4,7 @@ import (
 	_ "api.com/go-echo-rest-api/docs"
 	"api.com/go-echo-rest-api/src/adapter/dto/input"
 	"api.com/go-echo-rest-api/src/core/error_handling"
-	"api.com/go-echo-rest-api/src/infrastructure/database"
+	"api.com/go-echo-rest-api/src/infrastructure/rest_api/context"
 	"api.com/go-echo-rest-api/src/usecase"
 	"fmt"
 	"github.com/labstack/echo/v4"
@@ -13,14 +13,10 @@ import (
 	"unicode/utf8"
 )
 
-type MessageController struct {
-	Usecase *usecase.MessageUsecase
-}
+type MessageController struct{}
 
-func NewMessageController(sqlHandler *database.SqlHandler) *MessageController {
-	return &MessageController{
-		Usecase: usecase.NewMessageUsecase(sqlHandler),
-	}
+func NewMessageController() *MessageController {
+	return &MessageController{}
 }
 
 // search messages.
@@ -36,9 +32,10 @@ func NewMessageController(sqlHandler *database.SqlHandler) *MessageController {
 // @Failure 500 {object} error_handling.APIError
 // @Router /message [get]
 func (controller MessageController) SearchMessage(c echo.Context) error {
+	cc, _ := c.(*context.CustomContext)
 	// リクエストパラメータと構造体をバインドする
 	req := new(input.MessageSearchInput)
-	if err := c.Bind(req); err != nil {
+	if err := cc.Bind(req); err != nil {
 		return errors.WithStack(err) // 必ずstacktraceをつけてエラーを返す
 	}
 
@@ -61,7 +58,7 @@ func (controller MessageController) SearchMessage(c echo.Context) error {
 		return errors.WithStack(e)
 	}
 
-	result, err := controller.Usecase.Search(req)
+	result, err := usecase.NewMessageUsecase(cc.DB).Search(req)
 	// Controller側でエラーハンドリングする
 	if err != nil {
 		return errors.WithStack(err)
