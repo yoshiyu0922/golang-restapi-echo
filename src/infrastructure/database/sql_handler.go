@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/pkg/errors"
 )
 
 type SqlHandler struct {
@@ -29,4 +30,27 @@ func NewSqlHandler(
 	sqlHandler := new(SqlHandler)
 	sqlHandler.Conn = conn
 	return sqlHandler
+}
+
+/**
+トランザクションを実行する
+*/
+func (sqlHandler *SqlHandler) Transaction(txFunc func(*sql.Tx) error) error {
+	tx, err := sqlHandler.Conn.Begin()
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	err = txFunc(tx)
+	defer func() {
+		if p := recover(); p != nil {
+			// panic が発生したとき
+			tx.Rollback()
+			panic(p)
+		} else if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+	return err
 }
